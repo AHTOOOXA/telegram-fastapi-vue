@@ -3,6 +3,7 @@ import logging
 
 import betterlogging as bl
 from aiogram import Bot, Dispatcher
+from aiogram.client.bot import DefaultBotProperties
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
 from aiogram_dialog import setup_dialogs
 
@@ -50,7 +51,7 @@ async def main():
 
     config = load_config(".env")
 
-    bot = Bot(token=config.tg_bot.token, parse_mode="HTML")
+    bot = Bot(token=config.tg_bot.token, default=DefaultBotProperties(parse_mode='HTML'))
     storage = RedisStorage.from_url(
         config.redis.dsn(),
         key_builder=DefaultKeyBuilder(with_bot_id=True, with_destiny=True),
