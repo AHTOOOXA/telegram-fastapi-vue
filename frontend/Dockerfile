@@ -4,6 +4,6 @@ WORKDIR /home/node/app
 
 COPY package*.json /home/node/app/
 
-RUN npm install
+RUN yarn install
 
 COPY . /home/node/app

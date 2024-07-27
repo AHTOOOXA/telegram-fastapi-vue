@@ -1,112 +1,114 @@
-version: "3"
+# NEEDS TO BE UPDATED
 
-services:
-  app:
-    build:
-        context: ./frontend
-        dockerfile: Dockerfile
-    working_dir: "/home/node/app"
-    volumes:
-      - /var/app/medsync/:/home/node/app/dist
+# version: "3"
 
-#     Uncomment this if you are running in development
-#      - ./frontend:/home/node/app
+# services:
+#   app:
+#     build:
+#         context: ./frontend
+#         dockerfile: Dockerfile
+#     working_dir: "/home/node/app"
+#     volumes:
+#       - /var/app/medsync/:/home/node/app/dist
 
-#     Uncomment this if you are running in development
-#    command: ["npm", "run", "dev", "--host"]
+# #     Uncomment this if you are running in development
+# #      - ./frontend:/home/node/app
 
-#     Comment this if you are running in production
-    command: ["npm", "run", "build"]
+# #     Uncomment this if you are running in development
+# #    command: ["npm", "run", "dev", "--host"]
 
-    stop_signal: SIGINT
+# #     Comment this if you are running in production
+#     command: ["npm", "run", "build"]
 
-  bot:
-    image: "medsyncapp_bot"
-    stop_signal: SIGINT
-    build:
-      context: ./backend
-      dockerfile: ./bot.Dockerfile
-    volumes:
-      - ./backend/src:/src/  # Volume for bot code
-      - /var/app/medsync:/src/public # Volume for static files, that are shared between bot and frontend
-    restart: always
+#     stop_signal: SIGINT
 
-    env_file:
-      - ".env"
+#   bot:
+#     image: "medsyncapp_bot"
+#     stop_signal: SIGINT
+#     build:
+#       context: ./backend
+#       dockerfile: ./bot.Dockerfile
+#     volumes:
+#       - ./backend/src:/src/  # Volume for bot code
+#       - /var/app/medsync:/src/public # Volume for static files, that are shared between bot and frontend
+#     restart: always
 
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
+#     env_file:
+#       - ".env"
 
-  pg_database:
-    image: postgres:13-alpine
-    ports:
-      - "5452:5432" # Change if you like! 5439 is external to container
-    restart: always
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    command: "postgres -c max_connections=150 -c shared_buffers=512MB -c effective_cache_size=1536MB -c maintenance_work_mem=128MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=3495kB -c min_wal_size=1GB -c max_wal_size=4GB -c max_worker_processes=2 -c max_parallel_workers_per_gather=1 -c max_parallel_workers=2 -c max_parallel_maintenance_workers=1"
-    env_file:
-      - '.env'
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "200k"
+#         max-file: "10"
 
-  webhook:
-    image: "medsyncapp_web"
-    stop_signal: SIGINT
-    build:
-      context: ./backend
-      dockerfile: ./web.Dockerfile
-    ports:
-      - "3779:8000"
-    volumes:
-      - ./backend/src:/src
-    restart: always
-    env_file:
-      - ".env"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "200k"
-        max-file: "10"
+#   pg_database:
+#     image: postgres:13-alpine
+#     ports:
+#       - "5452:5432" # Change if you like! 5439 is external to container
+#     restart: always
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#     command: "postgres -c max_connections=150 -c shared_buffers=512MB -c effective_cache_size=1536MB -c maintenance_work_mem=128MB -c checkpoint_completion_target=0.9 -c wal_buffers=16MB -c default_statistics_target=100 -c random_page_cost=1.1 -c effective_io_concurrency=200 -c work_mem=3495kB -c min_wal_size=1GB -c max_wal_size=4GB -c max_worker_processes=2 -c max_parallel_workers_per_gather=1 -c max_parallel_workers=2 -c max_parallel_maintenance_workers=1"
+#     env_file:
+#       - '.env'
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "200k"
+#         max-file: "10"
 
-
-  redis_cache:
-    image: redis:6.2-alpine
-    restart: always
-    command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
-    env_file:
-      - ".env"
-    volumes:
-      - cache:/data
-
-  mkdocs:
-    build:
-      context: mkdocs
-      dockerfile: Dockerfile
-    container_name: "mkdocs_container"
-#    ports:
-#      - "3780:8000"
-    volumes:
-      - ./mkdocs:/usr/src/mkdocs
-      - /var/app/mkdocs/public_docs:/usr/src/mkdocs/public_docs
-
-#  ngrok:
-#    image: ngrok/ngrok:latest
-#    restart: unless-stopped
-#    environment:
-#      - NGROK_CONFIG=/etc/ngrok.yml
-#    volumes:
-#      - ./ngrok.yml:/etc/ngrok.yml
-#    expose:
-#      - 443
+#   webhook:
+#     image: "medsyncapp_web"
+#     stop_signal: SIGINT
+#     build:
+#       context: ./backend
+#       dockerfile: ./web.Dockerfile
+#     ports:
+#       - "3779:8000"
+#     volumes:
+#       - ./backend/src:/src
+#     restart: always
+#     env_file:
+#       - ".env"
+#     logging:
+#       driver: "json-file"
+#       options:
+#         max-size: "200k"
+#         max-file: "10"
 
 
-volumes:
-  pgdata: { }
-  cache: { }
+#   redis_cache:
+#     image: redis:6.2-alpine
+#     restart: always
+#     command: redis-server --port $REDIS_PORT --save 20 1 --loglevel warning --requirepass $REDIS_PASSWORD
+#     env_file:
+#       - ".env"
+#     volumes:
+#       - cache:/data
+
+#   mkdocs:
+#     build:
+#       context: mkdocs
+#       dockerfile: Dockerfile
+#     container_name: "mkdocs_container"
+# #    ports:
+# #      - "3780:8000"
+#     volumes:
+#       - ./mkdocs:/usr/src/mkdocs
+#       - /var/app/mkdocs/public_docs:/usr/src/mkdocs/public_docs
+
+# #  ngrok:
+# #    image: ngrok/ngrok:latest
+# #    restart: unless-stopped
+# #    environment:
+# #      - NGROK_CONFIG=/etc/ngrok.yml
+# #    volumes:
+# #      - ./ngrok.yml:/etc/ngrok.yml
+# #    expose:
+# #      - 443
+
+
+# volumes:
+#   pgdata: { }
+#   cache: { }

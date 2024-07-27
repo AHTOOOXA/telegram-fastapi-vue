@@ -12,14 +12,14 @@ services:
       - ./frontend:/home/node/app
       - /home/node/app/node_modules
 
-    command: ["npm", "run", "dev", "--host"]
+    command: ["yarn", "dev", "--host"]
     ports:
       - "5173:5173"
 
     stop_signal: SIGINT
 
   bot:
-    image: "medsyncapp_bot"
+    image: "telegram-fastapi-vue-bot"
     stop_signal: SIGINT
     build:
       context: ./backend
@@ -55,7 +55,7 @@ services:
         max-file: "10"
 
   webhook:
-    image: "medsyncapp_web"
+    image: "telegram-fastapi-vue-webhook"
     stop_signal: SIGINT
     build:
       context: ./backend
@@ -82,17 +82,6 @@ services:
       - ".env"
     volumes:
       - cache:/data
-
-  mkdocs:
-    build:
-      context: mkdocs
-      dockerfile: Dockerfile
-    container_name: "mkdocs_container"
-#    ports:
-#      - "3780:8000"
-    volumes:
-      - ./mkdocs:/usr/src/mkdocs
-      - /var/app/mkdocs/public_docs:/usr/src/mkdocs/public_docs
 
   # ngrok:
   #   image: ngrok/ngrok:latest
