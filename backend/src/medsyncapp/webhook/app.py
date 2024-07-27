@@ -5,6 +5,10 @@ from starlette.middleware.cors import CORSMiddleware
 
 from medsyncapp.webhook import routers
 
+from medsyncapp.webhook import admin
+from sqladmin import Admin
+from medsyncapp.webhook.utils import engine
+
 app = FastAPI()
 prefix_router = APIRouter(prefix="/api")
 
@@ -39,3 +43,11 @@ for router in [
     prefix_router.include_router(router)
 
 app.include_router(prefix_router)
+
+
+app_admin = Admin(app, engine)
+
+for view in [
+    admin.users.UserAdmin,
+]:
+    app_admin.add_view(view)
